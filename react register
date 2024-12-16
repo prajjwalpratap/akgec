@@ -1,0 +1,164 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  Box,
+  TextField,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+} from '@mui/material';
+
+const App = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
+
+  const [employees, setEmployees] = useState([]);
+
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('https://jsonplaceholder.typicode.com/users', formData);
+      alert('Form submitted successfully!');
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error submitting the form:', error);
+      alert('Failed to submit the form.');
+    }
+  };
+
+  // Fetch employees data
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get('https://jsonplaceholder.typicode.com/users');
+        setEmployees(response.data);
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+      }
+    };
+    fetchEmployees();
+  }, []);
+
+  return (
+    <Box sx={{ padding: 4 }}>
+      {/* Registration Form */}
+      <Box sx={{ maxWidth: 600, margin: 'auto', marginBottom: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Register
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Phone"
+            name="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Submit
+          </Button>
+        </form>
+      </Box>
+
+      {/* Employee List */}
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          Employee List
+        </Typography>
+        <Grid container spacing={2}>
+          {employees.map((employee) => (
+            <Grid item xs={12} sm={6} md={4} key={employee.id}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">{employee.name}</Typography>
+                  <Typography variant="body2">Email: {employee.email}</Typography>
+                  <Typography variant="body2">Phone: {employee.phone}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Box>
+  );
+};
+
+export default App;
+
+
+{
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "^5.0.0",
+    "@mui/material": "^5.15.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "axios": "^1.5.0"
+  },
+  "main": "/index.js",
+  "devDependencies": {}
+}
+
+body {
+  font-family: sans-serif;
+  -webkit-font-smoothing: auto;
+  -moz-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+import React, { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./styles.css";
+
+import App from "./App";
+
+const root = createRoot(document.getElementById("root"));
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
